@@ -198,6 +198,7 @@ public class WithContainerStep extends AbstractStepImpl {
 
             String command = launcher.isUnix() ? "cat" : "cmd.exe";
             container = dockerClient.run(env, step.image, step.args, ws, volumes, volumesFromContainers, envReduced, dockerClient.whoAmI(), /* expected to hang until killed */ command);
+            Thread.sleep(2000); // Hack to prevent race condition [JENKINS-54389]
             final List<String> ps = dockerClient.listProcess(env, container);
             if (!ps.contains(command)) {
                 listener.error(
